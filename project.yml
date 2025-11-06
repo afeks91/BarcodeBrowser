@@ -1,0 +1,22 @@
+name: BarcodeBrowser
+options:
+  bundleIdPrefix: com.example
+settings:
+  BASE_SDK: iphoneos
+  IPHONEOS_DEPLOYMENT_TARGET: "14.0"
+targets:
+  BarcodeBrowser:
+    type: application
+    platform: iOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources
+    settings:
+      INFOPLIST_FILE: Info.plist
+      PRODUCT_BUNDLE_IDENTIFIER: com.example.BarcodeBrowser
+      PRODUCT_NAME: BarcodeBrowser
+      SWIFT_VERSION: 5.0
+      TARGETED_DEVICE_FAMILY: "1"
+    scheme:
+      testTargets: []
+      gatherCoverageData: false
