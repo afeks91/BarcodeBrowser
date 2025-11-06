@@ -1,0 +1,43 @@
+name: iOS unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-unsigned-ipa:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: |
+          brew update
+          brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build archive (no code signing)
+        run: |
+          xcodebuild -scheme BarcodeBrowser \
+            -configuration Release \
+            -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO \
+            archive -archivePath $PWD/build/BarcodeBrowser.xcarchive
+
+      - name: Package unsigned .ipa
+        run: |
+          APP_PATH="$PWD/build/BarcodeBrowser.xcarchive/Products/Applications/BarcodeBrowser.app"
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          /usr/bin/zip -r BarcodeBrowser-unsigned.ipa Payload
+          rm -rf Payload
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BarcodeBrowser-unsigned-ipa
+          path: BarcodeBrowser-unsigned.ipa
